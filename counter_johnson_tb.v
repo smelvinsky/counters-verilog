@@ -16,7 +16,7 @@
     reg Reset;
 
     /* outputs */
-    wire [3:0] Out;
+    wire [2:0] Out;
 
     /* variables */
     integer i;
@@ -30,23 +30,27 @@
         $dumpfile("counter_1_test.vcd");
         $dumpvars;
 
+        Up_down = 0;
         Clock = 1'b0;
         i = 0;
-        Up_down = 0;
         Reset = 0;
         #10;
         Reset = 1;
         #5;
+        Clock = 1'b1;
+        #5;
         Reset = 0;
+        Clock = 1'b0;
         #20;
 
-        while (i < 64) begin
-            if (i == 32) begin
+        while (i < 20) begin
+            if (i == 10) begin
                 Up_down = 1;
+                #10;
                 $display("Up/Down change");
                 end
-            #10;
-            Clock = ~Clock;
+            Clock = ~Clock; #10;
+            Clock = ~Clock; #10;
             i = i + 1;
             $display("Counter out: %b\ttime = %d", Out, $time);
         end

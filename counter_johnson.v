@@ -9,19 +9,29 @@
      input clock,
      input reset,
      input up_down,
-     output [3:0] out
+     output [2:0] out
  );
 
-    reg [3:0] out_tmp;
+    reg [2:0] out_tmp;
 
-    always @ (posedge(clock), reset)
+    always @ (posedge(clock))
     begin
-        if (reset == 1'b1)
+        if (reset)
             out_tmp = 0;
-        else if (up_down == 1'b1)
-            out_tmp = {out_tmp[2:0], ~out_tmp[3]};
+        else if (up_down == 1'b0)
+            begin
+            if (out_tmp != 3'b110)
+                out_tmp <= {out_tmp[1:0], ~out_tmp[2]};
+            else
+                out_tmp <= 3'b000;
+            end
         else
-            out_tmp = {~out_tmp[0], out_tmp[3:1]};
+            begin
+            if (out_tmp != 3'b000)
+                out_tmp <= {~out_tmp[0], out_tmp[2:1]};
+            else
+                out_tmp <= 3'b110;
+            end
     end
 
     assign out = out_tmp;
